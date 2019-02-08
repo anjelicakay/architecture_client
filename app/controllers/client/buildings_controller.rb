@@ -1,8 +1,7 @@
 class Client::BuildingsController < ApplicationController
 
   def index
-    response = HTTP.get("http://localhost:3000/api/buildings")
-    @buildings = response.parse
+    @buildings = Building.all
     render 'index.html.erb'
   end
 
@@ -11,26 +10,19 @@ class Client::BuildingsController < ApplicationController
   end
 
   def create
-    client_params = {
+    @building = Building.create( 
                      name: params[:name],
                      address: params[:address],
                      height: params[:height],
                      construction_date: params[:construction_date],
                      architect: params[:architect]
-                    }
+                    )
                     
-    response = HTTP.post(
-                         "http://localhost:3000/api/buildings", 
-                         form: client_params
-                        )
-
-    building = response.parse
-    redirect_to "/client/buildings/#{building['id']}"
+    redirect_to "/client/buildings/#{@buliding.id}"
   end
 
   def show
-    response = HTTP.get("http://localhost:3000/api/buildings/#{params[:id]}")
-    @building = response.parse
+    @building = Building.find(params[:id])
     render 'show.html.erb'
   end
 
