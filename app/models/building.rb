@@ -1,7 +1,8 @@
 class Building
-  attr_accessor :name, :address, :height, :construction_date, :architect, :id
+  attr_accessor :id, :name, :address, :height, :construction_date, :architect
 
   def initialize(input_options)
+    @id = input_options["id"]
     @name = input_options["name"] 
     @address = input_options["address"]
     @height = input_options["height"]
@@ -20,8 +21,11 @@ class Building
     array
   end
 
-  def create
-    response = HTTP.post("http://localhost:3000/api/building")
+  def self.create(input_options)
+    response = HTTP.post("http://localhost:3000/api/buildings",
+                          form: input_options)
+    building_hash = response.parse
+    Building.new(building_hash)
   end
 
   def self.find(input_id)
@@ -29,5 +33,16 @@ class Building
     building_hash = response.parse
     Building.new(building_hash)
   end  
+
+  def update(input_options)
+    response = HTTP.patch("http://localhost:3000/api/buildings/#{ self.id }",
+                            form: input_options)
+    building_hash = response.parse
+    Building.new(building_hash)
+  end
+
+  def destroy
+    response = HTTP.delete("http://localhost:3000/api/buildings/#{id}")
+  end
 
 end  
